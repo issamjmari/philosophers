@@ -6,7 +6,7 @@ NAME = philo
 all : $(NAME)
 
 $(NAME) :
-	cc $(SRC) -fsanitize=address -o $(NAME)
+	cc $(SRC) -o $(NAME)
 fclean :
 	$(RM) $(NAME)
 re : fclean all
