@@ -7,8 +7,10 @@
 typedef	struct s_philo
 {
 	pthread_mutex_t	*fork;
+	pthread_mutex_t	is_printing;
 	pthread_t		th;
 	unsigned long long				start_time;
+	int				started;
 	int				number_of_philos;
 	int				number_of_forks;
 	int				time_to_die;
