@@ -8,11 +8,10 @@ unsigned long long	gettime (void)
 }
 void	ft_usleep(unsigned long long n)
 {
-	int	first_time;
+	unsigned long long	first_time;
 
 	first_time = gettime();
-	printf("n is %llu\n", n );
-	while (((gettime() - first_time)) < n)
+	while ((gettime() - first_time) < n)
 		usleep(10);
 }
 void	*make(void *s)
@@ -22,7 +21,6 @@ void	*make(void *s)
 
 	phi = (t_philos *) s;
 	i = 0;
-	phi->last_meal = 0;
 	while (i < phi->num_philo_must_eat)
 	{
 		pthread_mutex_lock(&phi->fork[phi->philo_id]);
@@ -32,26 +30,22 @@ void	*make(void *s)
 		pthread_mutex_lock(&phi->fork[(phi->philo_id + 1) % phi->number_of_philos]);
 		pthread_mutex_lock(&phi->is_printing);
 		printf("%llu %d has taken a fork\n", (gettime() - phi->start_time) / 1000, phi->philo_id);
-		// pthread_mutex_unlock(&phi->is_printing);
+		pthread_mutex_unlock(&phi->is_printing);
+		pthread_mutex_lock(&phi->is_printing);
 		printf("%llu %d is eating\n", (gettime() - phi->start_time) / 1000, phi->philo_id);
-		// pthread_mutex_unlock(&phi->is_printing);
-		if((((gettime() - phi->start_time) / 1000) - phi->last_meal) >= phi->time_to_die)
-		{
-			// pthread_mutex_lock(&phi->is_printing);
-			printf("%llu %d has died\n", (gettime() - phi->start_time) / 1000, phi->philo_id);
-			exit(1);
-		}
-		ft_usleep(phi->time_to_eat * 1000);
-		phi->last_meal = (gettime() - phi->start_time) / 1000;
+		pthread_mutex_unlock(&phi->is_printing);
+		phi->last_meal = gettime();
+		// printf("It is : %llu\n", phi->last_meal);
+		ft_usleep(phi->time_to_eat *  1000);
 		pthread_mutex_unlock(&phi->fork[phi->philo_id]);
 		pthread_mutex_unlock(&phi->fork[(phi->philo_id + 1) % phi->number_of_philos]);
-		// pthread_mutex_lock(&phi->is_printing);
+		pthread_mutex_lock(&phi->is_printing);
 		printf("%llu %d is sleeping\n", (gettime() - phi->start_time) / 1000, phi->philo_id);
-		// pthread_mutex_unlock(&phi->is_printing);
+		pthread_mutex_unlock(&phi->is_printing);
 		ft_usleep(phi->time_to_sleep * 1000);
-		// pthread_mutex_lock(&phi->is_printing);
+		pthread_mutex_lock(&phi->is_printing);
 		printf("%llu %d is thinking\n", (gettime() - phi->start_time) / 1000, phi->philo_id);
-		// pthread_mutex_unlock(&phi->is_printing);
+		pthread_mutex_unlock(&phi->is_printing);
 		i++;
 	}
 	return 0;
@@ -77,6 +71,25 @@ t_philos	*mutex_init(t_philos *philo)
 	}
 	return (philo);
 }
+
+void	check_death(t_philos *philo)
+{
+	int	i;
+
+	i = 0;
+	while (1)
+	{
+		if (i == philo[i].number_of_philos)
+			i = 0;
+		if((gettime() - philo[i].last_meal) >= philo[i].time_to_die)
+		{
+			printf("It is 1 : %llu\n", (gettime() - philo[i].last_meal));
+			printf("\033[31;1m %llu %d has died\n", (gettime() - philo[i].start_time) / 1000, philo[i].philo_id);
+			exit(1);
+		}
+		i++;
+	}
+}
 void	create_philos(t_philos *philo)
 {
 	int			i;
@@ -92,12 +105,10 @@ void	create_philos(t_philos *philo)
 	i = 1;
 	while (i < philo->number_of_philos )
 	{
-			pthread_create(&philo[i].th, NULL, &make, &philo[i]);
+		pthread_create(&philo[i].th, NULL, &make, &philo[i]);
 		i += 2;
 	}
-	i = 0;
-	while (i < philo->number_of_philos)
-		pthread_join(philo[i++].th, NULL);
+	check_death(philo);
 }
 void	error_printing()
 {
@@ -115,6 +126,7 @@ t_philos	*preparing(char **av, int ac, t_philos *philo)
 	while (i < ft_atoi(av[1]))
 	{
 		philo[i].start_time = gettime();
+		philo[i].last_meal = gettime();
 		philo[i].philo_id = i + 1;
 		philo[i].number_of_philos = ft_atoi(av[1]);
 		philo[i].time_to_die = ft_atoi(av[2]);
