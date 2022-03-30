@@ -9,6 +9,7 @@ typedef	struct s_philo
 	pthread_mutex_t	*fork;
 	pthread_mutex_t	is_printing;
 	pthread_t		th;
+	pthread_mutex_t	done_mutex;
 	unsigned long long				start_time;
 	unsigned long long				last_meal;
 	int				number_of_philos;
@@ -18,5 +19,7 @@ typedef	struct s_philo
 	int				time_to_sleep;
 	int				num_philo_must_eat;
 	int				philo_id;
+	int				is_eating;
+	int				done;
 }	t_philos;
 #endif
