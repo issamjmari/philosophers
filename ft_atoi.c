@@ -6,11 +6,11 @@
 /*   By: ijmari <ijmari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/04 09:06:17 by ijmari            #+#    #+#             */
-/*   Updated: 2021/11/11 18:28:00 by ijmari           ###   ########.fr       */
+/*   Updated: 2022/04/03 15:03:42 by ijmari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "philo.h"
 
 static int	is_space(char c)
 {

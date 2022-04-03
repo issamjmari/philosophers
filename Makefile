@@ -1,4 +1,4 @@
-SRC = philo.c li/ft_atoi.c philo_utils.c
+SRC = philo.c ft_atoi.c philo_utils.c
 # CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
 NAME = philo

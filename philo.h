@@ -6,17 +6,17 @@
 /*   By: ijmari <ijmari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 14:53:53 by ijmari            #+#    #+#             */
-/*   Updated: 2022/04/03 14:55:37 by ijmari           ###   ########.fr       */
+/*   Updated: 2022/04/03 15:03:32 by ijmari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 # include <pthread.h>
-# include "li/libft.h"
 # include <stdio.h>
 # include <sys/time.h>
-
+# include <stdlib.h>
+# include <unistd.h>
 typedef struct s_philo
 {
 	pthread_mutex_t					*fork;
@@ -35,6 +35,7 @@ typedef struct s_philo
 	int								is_eating;
 	int								done;
 }	t_philos;
+int					ft_atoi(const char *str);
 t_philos			*preparing(char **av, int ac, t_philos *philo);
 unsigned long long	gettime(void);
 void				ft_usleep(unsigned long long n);
