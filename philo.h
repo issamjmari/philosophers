@@ -6,7 +6,7 @@
 /*   By: ijmari <ijmari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 14:53:53 by ijmari            #+#    #+#             */
-/*   Updated: 2022/04/03 15:03:32 by ijmari           ###   ########.fr       */
+/*   Updated: 2022/04/04 14:23:38 by ijmari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 # include <sys/time.h>
 # include <stdlib.h>
 # include <unistd.h>
+
 typedef struct s_philo
 {
 	pthread_mutex_t					*fork;
