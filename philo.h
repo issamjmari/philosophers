@@ -6,7 +6,7 @@
 /*   By: ijmari <ijmari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 14:53:53 by ijmari            #+#    #+#             */
-/*   Updated: 2022/04/04 14:23:38 by ijmari           ###   ########.fr       */
+/*   Updated: 2022/04/08 15:33:46 by ijmari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,14 @@
 # include <stdlib.h>
 # include <unistd.h>
 
+# define TRUE 1
+# define FALSE 0
 typedef struct s_philo
 {
 	pthread_mutex_t					*fork;
-	pthread_mutex_t					is_printing;
+	pthread_mutex_t					*is_printing;
 	pthread_t						th;
-	pthread_mutex_t					done_mutex;
+	pthread_mutex_t					*done_mutex;
 	unsigned long long				start_time;
 	unsigned long long				last_meal;
 	int								number_of_philos;
@@ -35,11 +37,13 @@ typedef struct s_philo
 	int								philo_id;
 	int								is_eating;
 	int								done;
+	int								while_eating;
+	
 }	t_philos;
 int					ft_atoi(const char *str);
 t_philos			*preparing(char **av, int ac, t_philos *philo);
 unsigned long long	gettime(void);
 void				ft_usleep(unsigned long long n);
 void				make_c(t_philos *phi);
-void				check_numtoeat(t_philos *philo);
+int					check_numtoeat(t_philos *philo);
 #endif

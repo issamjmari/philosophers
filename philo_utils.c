@@ -6,7 +6,7 @@
 /*   By: ijmari <ijmari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/03 14:56:02 by ijmari            #+#    #+#             */
-/*   Updated: 2022/04/03 14:59:51 by ijmari           ###   ########.fr       */
+/*   Updated: 2022/04/08 15:34:40 by ijmari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,26 @@
 
 void	make_c(t_philos *phi)
 {
-	phi->last_meal = gettime();
 	ft_usleep(phi->time_to_eat * 1000);
+	phi->while_eating = FALSE;
 	phi->is_eating++;
 	if (phi->is_eating == phi->num_philo_must_eat)
+	{
+		pthread_mutex_lock(phi->is_printing);
 		phi->done = 1;
+	}
 	pthread_mutex_unlock(&phi->fork[phi->philo_id - 1]);
 	pthread_mutex_unlock(&phi->fork[(phi->philo_id) % \
 	phi->number_of_philos]);
-	pthread_mutex_lock(&phi->is_printing);
+	pthread_mutex_lock(phi->is_printing);
 	printf("%llu %d is sleeping\n", \
 		(gettime() - phi->start_time) / 1000, phi->philo_id);
-	pthread_mutex_unlock(&phi->is_printing);
+	pthread_mutex_unlock(phi->is_printing);
 	ft_usleep(phi->time_to_sleep * 1000);
-	pthread_mutex_lock(&phi->is_printing);
+	pthread_mutex_lock(phi->is_printing);
 	printf("%llu %d is thinking\n", \
 	(gettime() - phi->start_time) / 1000, phi->philo_id);
-	pthread_mutex_unlock(&phi->is_printing);
+	pthread_mutex_unlock(phi->is_printing);
 }
 
 t_philos	*preparing(char **av, int ac, t_philos *philo)
@@ -55,7 +58,7 @@ t_philos	*preparing(char **av, int ac, t_philos *philo)
 	return (philo);
 }
 
-void	check_numtoeat(t_philos *philo)
+int	check_numtoeat(t_philos *philo)
 {
 	int	j;
 
@@ -65,9 +68,10 @@ void	check_numtoeat(t_philos *philo)
 		if (philo[j].done != 1)
 			break ;
 		if (j == philo->number_of_philos - 1 && philo[j].done == 1)
-			return ;
+			return (1) ;
 		j++;
 	}
+	return (0);
 }
 
 unsigned long long	gettime(void)
